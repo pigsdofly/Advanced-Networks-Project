@@ -1,8 +1,4 @@
-from bluepy import btle, thingy52
-import binascii
-import time
 
-MAC_ADDRESS = 'DF:6F:CF:05:BA:72'
 
 print ('# Creating new delegate class to handle notifications...')
 
@@ -33,9 +29,6 @@ class NewDelegate(btle.DefaultDelegate):
 #print ('# Connecting to Thingy with address {}...'.format(MAC_ADDRESS))
 thingy = thingy52.Thingy52(MAC_ADDRESS)
 
-# print("# Setting notification handler to default handler...")
-# thingy.setDelegate(thingy52.MyDelegate())
-
 print ('# Setting notification handler to new handler...')
 thingy.setDelegate(NewDelegate())
 
@@ -43,38 +36,56 @@ thingy.setDelegate(NewDelegate())
 
 # enable correct notifications depending on what is asked for?
 # print notification for all thingies 
+thingy.environment.enable()
+thingy.ui.enable()
 
 number = 0
-#take raspberry pie command to find correct one e.g. temp gas pressure humid
-#listen for command all the time 
-#call disable at start of loop then enable correct notification
-if number == 0:
-	print ('# Configuring and enabling temperature notification...')
-	thingy.environment.enable()
-	thingy.environment.configure(temp_int=1000)
-	thingy.environment.set_temperature_notification(True)
+check = True
+def selectSensor(number):
+	
+	thingy.enviroment.disable()
+	thingy.ui.disable()	
+	#take raspberry pie command to find correct one e.g. temp gas pressure humid
+	#listen for command all the time 
+	#call disable at start of loop then enable correct notification
+	if number == 0:
+		print ('# Configuring and enabling temperature notification...')
+		
+		thingy.environment.configure(temp_int=1000)
+		thingy.environment.set_temperature_notification(True)
 
 
-if number == 1:
-	thingy.enviroment.configure(press_int=1000)
-	thingy.enviroment.set_pressure_notification(True)
+	if number == 1:
+		thingy.enviroment.configure(press_int=1000)
+		thingy.enviroment.set_pressure_notification(True)
 
-if number == 2:
-	thingy.enviroment.configure(humid_int=1000)
-	thingy.enviroment.set_humidity_notification(True)
+	if number == 2:
+		thingy.enviroment.configure(humid_int=1000)
+		thingy.enviroment.set_humidity_notification(True)
 
-if number == 3:
-	thingy.enviroment.configure(gas_mode_int=1)
-	thingy.enviroment.set_gas_notification(True)
+	if number == 3:
+		thingy.enviroment.configure(gas_mode_int=1)
+		thingy.enviroment.set_gas_notification(True)
 
-if number == 4:
-	thingy.ui.enable()
-	thingy.ui.set_btn_notification(True)
+	if number == 4:
+		
+		thingy.ui.set_btn_notification(True)
+	if number == 5:
+		check = False
 
 
-while True:
+selectSensor(number)
+
+while check == True:
 
 	thingy.waitForNotifications(2)
 
 	time.sleep(60)
 thingy.disconnect()
+
+if __name__ == '__main__':
+	from bluepy import btle, thingy52
+import binascii
+import time
+
+MAC_ADDRESS = 'DF:6F:CF:05:BA:72'
