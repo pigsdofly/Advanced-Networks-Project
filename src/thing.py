@@ -12,23 +12,23 @@ class NewDelegate(btle.DefaultDelegate):
 	def handleNotification(self, hnd, data):
 		if hnd == thingy52.e_temperature_handle:
 			data = int.from_bytes(data, byteorder='little')
-			print ('Notification: Temperature received: '.data)
+			print ('Notification: Temperature received: ', data)
 		if hnd == thingy52.ui_button_handle:
 			data = int.from_bytes(data, byteorder='little')
 			if data == 1:
 				press = 'Button pressed'
 			if data == 0:
 				press ='Button Released'
-			print ('Notification: Button recieved: ' . press)
+			print ('Notification: Button recieved: ', press)
 		if hnd == thingy52.e_humidity_handle:
 			data = int.from_bytes(data, byteorder='little')
-			print('Notification: pressure recieved: ' .data)
+			print('Notification: pressure recieved: ',data)
 		if hnd == thingy52.e_pressure_handle:
 			data = int.from_bytes(data, byteorder='little')
-			print('Notification: pressure recieved: ' .data)
+			print('Notification: pressure recieved: ', data)
 		if hnd == thingy52.e_gas_handle:
 			data = int.from_bytes(data, byteorder='little')
-			print('Notification: gas recieved: ' .data)
+			print('Notification: gas recieved: ', data)
 
 #print ('# Connecting to Thingy with address {}...'.format(MAC_ADDRESS))
 thingy = thingy52.Thingy52(MAC_ADDRESS)
