@@ -1,5 +1,6 @@
 import config
 import delegate
+import server
 import socket
 from bluepy import btle, thingy52
 
@@ -17,6 +18,8 @@ def add_thingies():
 if __name__ == '__main__':
     try:
         thingies = add_thingies()
+        server.open_server(thingies)
+        
         while(True):
             for thingy in thingies:
                 thingy.sound.enable()
@@ -24,5 +27,6 @@ if __name__ == '__main__':
                 thingy.sound.play_speaker_sample(5)
                 thingy.waitForNotifications(timeout=10)
     finally:
-        thingy.disconnect()
-        del thingy
+        for thingy in thingies:
+            thingy.disconnect()
+            del thingy
