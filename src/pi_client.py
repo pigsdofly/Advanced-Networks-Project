@@ -1,5 +1,6 @@
 import socket
 from config import HOST, PORT
+from utils import send_data, byte_encode
 
 class pi_client:
     def __init__(self, thingies):

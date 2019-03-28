@@ -1,5 +1,6 @@
 import socket
 from config import HOST, PORT
+from utils import send_data, byte_encode
 
 class Server:
 
@@ -9,6 +10,7 @@ class Server:
         self.s.bind((HOST, PORT))
         self.s.listen(1)
         self.s.settimeout(30)
+        print("Server running on port "+str(PORT))
 
     def open_server(self):
         try:
@@ -16,38 +18,32 @@ class Server:
                 conn, addr = self.s.accept()
                 with conn:
                     print('Connected by', addr)
-                    conn.send(self.byte_encode("Welcome to the thermostat of the future! (not)"))
+                    conn.send(byte_encode("Welcome to the thermostat of the future! (not)"))
                     while True:
                         try:
                             data = conn.recv(1024)
                             if not data:
                                 break
                             print(data)
-                            if data == self.byte_encode("lol"):
-                                self.send_data(conn, "lol")
-                            elif data == self.byte_encode("temperature"):
-                                self.send_data(conn, "coming soon")
-                            elif data == self.byte_encode("devices"):
-                                self.send_data(conn, "coming soon")
-                            elif data == self.byte_encode("help"):
-                                self.send_data(conn, "Current commands:\n\ttemperature: show temperature\n\tdevices: show connected devices\n\texit: exit")
-                            elif data == self.byte_encode("exit"):
-                                self.send_data(conn, "closing connection")
+                            if data == byte_encode("lol"):
+                                send_data(conn, "lol")
+                            elif data == byte_encode("temperature"):
+                                send_data(conn, "coming soon")
+                            elif data == byte_encode("devices"):
+                                send_data(conn, "coming soon")
+                            elif data == byte_encode("help"):
+                                send_data(conn, "Current commands:\n\ttemperature: show temperature\n\tdevices: show connected devices\n\texit: exit")
+                            elif data == byte_encode("exit"):
+                                send_data(conn, "closing connection")
                                 conn.close()
                                 break
                             else:
-                                conn.send(self.byte_encode("Not a recognised command"))
+                                conn.send(byte_encode("Not a recognised command"))
                         except:
                             conn.close()
 
         finally:
             self.s.close()
-
-    def send_data(self, conn, data):
-        conn.send(self.byte_encode(data))
-
-    def byte_encode(self, data):
-        return bytes(data+'\n', 'utf8')
 
 if __name__ == '__main__':
     server = Server()
