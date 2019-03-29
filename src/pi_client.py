@@ -16,6 +16,7 @@ class PiClient:
         data = self.sock.recv(1024)
         print(repr(data))
         self.sock.sendall(byte_encode('exit'))
+        self.sock.close()
         
     def send_temps(self):
         
