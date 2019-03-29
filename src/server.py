@@ -33,11 +33,11 @@ class Server:
                 break
             print(data[0:2])
             if data[0:2] == bytes("pi",'utf8'):
-                clean_data = ast.literal_eval(repr(data[2:-1]))
-                print(clean_data)
+                clean_data = data[2:-1].decode('utf-8')
+                clean_data = ast.literal_eval(clean_data)
                 self.current_temps = clean_data
                 send_data(conn, "data received")
-                print("Temps are now: "+str(self.current_temps))
+                print("Temps are now: "+str(self.current_temps[0]))
             else:
                 if data == byte_encode("lol"):
                     send_data(conn, "lol")
