@@ -1,7 +1,7 @@
 from bluepy import btle, thingy52
 import binascii
 import time
-
+from utils import SensorTypes
 
 
 class NewDelegate(btle.DefaultDelegate):
@@ -9,6 +9,7 @@ class NewDelegate(btle.DefaultDelegate):
     def handleNotification(self, hnd, data):
         if hnd == thingy52.e_temperature_handle:
             data = int.from_bytes(data, byteorder='little')
+            self.temps = data
             print ('Notification: Temperature received: ', data)
         if hnd == thingy52.ui_button_handle:
             data = int.from_bytes(data, byteorder='little')
@@ -27,36 +28,36 @@ class NewDelegate(btle.DefaultDelegate):
             data = int.from_bytes(data, byteorder='little')
             print('Notification: gas recieved: ', data)
 
-def selectSensor(number):
+def selectSensor(number, thingy):
     
-    thingy.environment.disable()
-    thingy.ui.disable()    
+    thingy.environment.enable()
+    thingy.ui.enable()    
     #take raspberry pie command to find correct one e.g. temp gas pressure humid
     #listen for command all the time 
     #call disable at start of loop then enable correct notification
-    if number == 0:
+    if number == SensorTypes.TEMPERATURE:
         print ('# Configuring and enabling temperature notification...')
         
         thingy.environment.configure(temp_int=1000)
         thingy.environment.set_temperature_notification(True)
 
 
-    if number == 1:
+    elif number == SensorTypes.PRESSURE:
         thingy.environment.configure(press_int=1000)
         thingy.environment.set_pressure_notification(True)
 
-    if number == 2:
+    elif number == SensorTypes.HUMID:
         thingy.environment.configure(humid_int=1000)
         thingy.environment.set_humidity_notification(True)
 
-    if number == 3:
+    elif number == SensorTypes.GAS:
         thingy.environment.configure(gas_mode_int=1)
         thingy.environment.set_gas_notification(True)
 
-    if number == 4:
+    elif number == SensorTypes.BUTTON:
         
         thingy.ui.set_btn_notification(True)
-    if number == 5:
+    else:
         check = False
 
 
@@ -88,4 +89,4 @@ if __name__ == '__main__':
         time.sleep(60)
     thingy.disconnect()
 
-MAC_ADDRESS = 'DF:6F:CF:05:BA:72'
+    MAC_ADDRESS = 'DF:6F:CF:05:BA:72'
