@@ -24,11 +24,16 @@ class PiClient:
         temp_string = "pi[21, 23]"
         for device in self.thingies:
             thing.selectSensor(SensorTypes.TEMPERATURE, device)
-            device.waitForNotifications(2)
-            #Get temperature information from the delegate
-            rounded_temp  = str(device.delegate.temps)[0:2]
-            print(int(rounded_temp))
-            temp_string = "pi"+"["+str(device.delegate.temps)+"]"
+            rounded_temp = ""
+            while len(rounded_temp) < 5:
+                device.waitForNotifications(2)
+                #Get temperature information from the delegate
+                #I hate this
+                rounded_temp  = str(device.delegate.temps)
+            
+            rounded_temp = rounded_temp[0:2]
+            print(rounded_temp)
+            temp_string = "pi"+"["+str(rounded_temp)+"]"
             
             print(device.delegate.temps)
         return temp_string

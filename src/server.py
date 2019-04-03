@@ -31,7 +31,6 @@ class Server:
             data = conn.recv(1024)
             if not data:
                 break
-            print(data[0:2])
             if data[0:2] == bytes("pi",'utf8'):
                 clean_data = data[2:-1].decode('utf-8')
                 clean_data = ast.literal_eval(clean_data)
