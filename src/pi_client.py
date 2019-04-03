@@ -20,19 +20,26 @@ class PiClient:
         self.sock.close()
         
     def get_temps(self):
-        temp_string = "pi[21, 23]"
+        device_info = []
         for device in self.thingies:
+            dev_dict = {}
+            for desc in device.getDescriptors():
+                if desc.uuid.getCommonName() == "Device Name":
+                    dev_dict['name'] = str(desc.read().decode('utf-8'))
+                    print(dev_dict['name'])
+
             thing.selectSensor(SensorTypes.TEMPERATURE, device)
             rounded_temp = ""
             device.waitForNotifications(2)
             #Get temperature information from the delegate
-            #I hate this
             t = device.delegate.temps
             rounded_temp  = '{}.{}'.format(int(t[:-2],16),int(t[-2:],16))
+            dev_dict['temp'] = rounded_temp
+            device_info.append(dev_dict)
             
-            temp_string = "pi"+"["+str(rounded_temp)+"]"
-            
-        return temp_string
+        dev_string = 'pi'+str(device_info)
+        print (dev_string)
+        return dev_string
 
     def fill_thingies(self):
         thingies = []

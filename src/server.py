@@ -23,6 +23,15 @@ class Server:
         finally:
             self.s.close()
 
+    def print_device_info(self):
+        if len(self.current_temps) == 0:
+            return "No device info available"
+        else:
+            ret_str = ""
+            for device in self.current_temps:
+                ret_str += "Device name: "+ device['name'] + " Recorded temperature: "+device['temp']
+            return ret_str
+
     def handle_data(self, conn, addr):
         print('Connected by', addr)
         conn.send(byte_encode("Welcome to the thermostat of the future! (not)"))
@@ -36,13 +45,12 @@ class Server:
                 clean_data = ast.literal_eval(clean_data)
                 self.current_temps = clean_data
                 send_data(conn, "data received")
-                print("Temps are now: "+str(self.current_temps[0]))
+                print(self.print_device_info())
             else:
                 if data == byte_encode("lol"):
                     send_data(conn, "lol")
                 elif data == byte_encode("temperature"):
-                    message = "The current temperatures are "+str(self.current_temps)
-                    send_data(conn, message)
+                    send_data(conn, self.print_device_info())
                 elif data == byte_encode("devices"):
                     send_data(conn, "coming soon")
                 elif data == byte_encode("help"):
