@@ -8,9 +8,9 @@ class NewDelegate(btle.DefaultDelegate):
 
     def handleNotification(self, hnd, data):
         if hnd == thingy52.e_temperature_handle:
-            data = int.from_bytes(data, byteorder='little')
+            data = binascii.b2a_hex(data)
             self.temps = data
-            print ('Notification: Temperature received: ', data)
+            print ('Notification: Temperature received: {}.{}'.format(int(data[:-2],16),int(data[-2:],16)))
         if hnd == thingy52.ui_button_handle:
             data = int.from_bytes(data, byteorder='little')
             if data == 1:

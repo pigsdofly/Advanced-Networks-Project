@@ -16,7 +16,6 @@ class PiClient:
         data = self.sock.recv(1024)
         self.sock.sendall(byte_encode(example_temps))
         data = self.sock.recv(1024)
-        print(repr(data))
         self.sock.sendall(byte_encode('exit'))
         self.sock.close()
         
@@ -25,17 +24,14 @@ class PiClient:
         for device in self.thingies:
             thing.selectSensor(SensorTypes.TEMPERATURE, device)
             rounded_temp = ""
-            while len(rounded_temp) < 5:
-                device.waitForNotifications(2)
-                #Get temperature information from the delegate
-                #I hate this
-                rounded_temp  = str(device.delegate.temps)
+            device.waitForNotifications(2)
+            #Get temperature information from the delegate
+            #I hate this
+            t = device.delegate.temps
+            rounded_temp  = '{}.{}'.format(int(t[:-2],16),int(t[-2:],16))
             
-            rounded_temp = rounded_temp[0:2]
-            print(rounded_temp)
             temp_string = "pi"+"["+str(rounded_temp)+"]"
             
-            print(device.delegate.temps)
         return temp_string
 
     def fill_thingies(self):
