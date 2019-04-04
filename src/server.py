@@ -40,7 +40,7 @@ class Server:
         conn, addr = sock.accept()
         print("Accepted connection from ", addr)
         conn.setblocking(False)
-        conn.send(byte_encode("Welcome to the thermostat of the future! (Not)"))
+        conn.send(byte_encode("Welcome to the thermostat of the future! (Not)\nTo see list of commands, type 'help'"))
         data = types.SimpleNamespace(addr=addr, inb=b'', outb=b'')
         events = selectors.EVENT_READ | selectors.EVENT_WRITE
         self.sel.register(conn, events, data=data)
@@ -92,7 +92,7 @@ class Server:
         else:
             ret_str = "Currently connected devices: "
             for device in self.current_temps:
-                ret_str += device['name']
+                ret_str += device['name'] + '\n'
             return ret_str
 
 
@@ -102,7 +102,7 @@ class Server:
         else:
             ret_str = ""
             for device in self.current_temps:
-                ret_str += "Device name: "+ device['name'] + " Recorded temperature: "+device['temp']
+                ret_str += "Device name: "+ device['name'] + " Recorded temperature: "+device['temp'] + '\n'
             return ret_str
 
 if __name__ == '__main__':

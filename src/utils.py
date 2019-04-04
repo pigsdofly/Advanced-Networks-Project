@@ -10,4 +10,7 @@ class SensorTypes(Enum):
 
 
 def byte_encode(data):
-    return bytes(data+'\n', 'utf8')
+    newline = '\n'
+    if data[-1] == '\n':
+        newline = ''
+    return bytes(data+newline, 'utf8')
