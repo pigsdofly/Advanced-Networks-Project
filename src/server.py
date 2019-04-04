@@ -50,7 +50,6 @@ class Server:
         conn = key.fileobj
         key_data = key.data
 
-#            try:
         if mask & selectors.EVENT_READ:
             data = conn.recv(1024)
             if data:
@@ -59,39 +58,45 @@ class Server:
                     clean_data = data[2:-1].decode('utf-8')
                     clean_data = ast.literal_eval(clean_data)
                     self.current_temps = clean_data
-                    print(self.print_device_info())
+                    print(self.get_temp_info())
 
             else:
                 self.sel.unregister(conn)
                 conn.close()
-
 
         if mask & selectors.EVENT_WRITE:
             data = key_data.inb
             if data == byte_encode("lol"):
                 self.send_data(conn, "lol", key_data)
             elif data == byte_encode("temperature"):
-                self.send_data(conn, self.print_device_info(), key_data)
+                self.send_data(conn, self.get_temp_info(), key_data)
             elif data == byte_encode("devices"):
-                self.send_data(conn, "coming soon", key_data)
+                self.send_data(conn, self.get_devices(), key_data)
             elif data == byte_encode("help"):
                 self.send_data(conn, "Current commands:\n\ttemperature: show temperature\n\tdevices: show connected devices\n\texit: exit", key_data)
             elif data == byte_encode("exit"):
                 print("Closed connection")
                 self.sel.unregister(conn)
                 conn.close()
-                #else:
-                 #   conn.send(byte_encode("Not a recognised command"))
- #           except:
-   #             conn.close()
-  #              break
+            elif data != b'':
+                 self.send_data(conn, "Not a recognised command", key_data)
     
     def send_data(self, conn, message, data):
         b_message = byte_encode(message)
         sent = conn.send(b_message)
         data.inb = b''
 
-    def print_device_info(self):
+    def get_devices(self):
+        if len(self.current_temps) == 0:
+            return "No device info available"
+        else:
+            ret_str = "Currently connected devices: "
+            for device in self.current_temps:
+                ret_str += device['name']
+            return ret_str
+
+
+    def get_temp_info(self):
         if len(self.current_temps) == 0:
             return "No device info available"
         else:
