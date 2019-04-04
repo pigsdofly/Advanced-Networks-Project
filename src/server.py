@@ -90,7 +90,7 @@ class Server:
         if len(self.current_temps) == 0:
             return "No device info available"
         else:
-            ret_str = "Currently connected devices: "
+            ret_str = "Currently connected devices:\n "
             for device in self.current_temps:
                 ret_str += device['name'] + '\n'
             return ret_str
@@ -102,7 +102,7 @@ class Server:
         else:
             ret_str = ""
             for device in self.current_temps:
-                ret_str += "Device name: "+ device['name'] + " Recorded temperature: "+device['temp'] + '\n'
+                ret_str += "The temperature near "+ device['name'] + " is: "+device['temp'] + '\n'
             return ret_str
 
 if __name__ == '__main__':
