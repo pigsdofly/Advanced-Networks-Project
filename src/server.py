@@ -55,30 +55,31 @@ class Server:
             data = conn.recv(1024)
             if data:
                 key_data.inb = data
+                if data[0:2] == bytes("pi",'utf8'):
+                    clean_data = data[2:-1].decode('utf-8')
+                    clean_data = ast.literal_eval(clean_data)
+                    self.current_temps = clean_data
+                    print(self.print_device_info())
+
             else:
                 self.sel.unregister(conn)
                 conn.close()
 
+
         if mask & selectors.EVENT_WRITE:
             data = key_data.inb
-            if data[0:2] == bytes("pi",'utf8'):
-                clean_data = data[2:-1].decode('utf-8')
-                clean_data = ast.literal_eval(clean_data)
-                self.current_temps = clean_data
-                print(self.print_device_info())
-            else:
-                if data == byte_encode("lol"):
-                    self.send_data(conn, "lol", key_data)
-                elif data == byte_encode("temperature"):
-                    self.send_data(conn, self.print_device_info(), key_data)
-                elif data == byte_encode("devices"):
-                    self.send_data(conn, "coming soon", key_data)
-                elif data == byte_encode("help"):
-                    self.send_data(conn, "Current commands:\n\ttemperature: show temperature\n\tdevices: show connected devices\n\texit: exit", key_data)
-                elif data == byte_encode("exit"):
-                    print("Closed connection")
-                    self.sel.unregister(conn)
-                    conn.close()
+            if data == byte_encode("lol"):
+                self.send_data(conn, "lol", key_data)
+            elif data == byte_encode("temperature"):
+                self.send_data(conn, self.print_device_info(), key_data)
+            elif data == byte_encode("devices"):
+                self.send_data(conn, "coming soon", key_data)
+            elif data == byte_encode("help"):
+                self.send_data(conn, "Current commands:\n\ttemperature: show temperature\n\tdevices: show connected devices\n\texit: exit", key_data)
+            elif data == byte_encode("exit"):
+                print("Closed connection")
+                self.sel.unregister(conn)
+                conn.close()
                 #else:
                  #   conn.send(byte_encode("Not a recognised command"))
  #           except:
