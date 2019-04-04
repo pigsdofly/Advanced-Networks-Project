@@ -23,10 +23,8 @@ class PiClient:
         device_info = []
         for device in self.thingies:
             dev_dict = {}
-            for desc in device.getDescriptors():
-                if desc.uuid.getCommonName() == "Device Name":
-                    dev_dict['name'] = str(desc.read().decode('utf-8'))
-                    print(dev_dict['name'])
+            dev_dict['name'] = thing.getName(device)
+            print(dev_dict['name'])
 
             thing.selectSensor(SensorTypes.TEMPERATURE, device)
             rounded_temp = ""

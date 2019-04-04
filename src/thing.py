@@ -28,6 +28,12 @@ class NewDelegate(btle.DefaultDelegate):
             data = int.from_bytes(data, byteorder='little')
             print('Notification: gas recieved: ', data)
 
+def getName(thingy):
+    for descriptor in thingy.getDescriptors():
+        if descriptor.uuid.getCommonName() == "Device Name":
+            return str(descriptor.read().decode('utf-8'))
+    return "No name found"
+
 def selectSensor(number, thingy):
     
     thingy.environment.enable()
