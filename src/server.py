@@ -3,7 +3,7 @@ import selectors
 import ast
 import types
 from config import HOST, PORT
-from utils import send_data, byte_encode
+from utils import byte_encode
 
 class Server:
     current_temps = []
