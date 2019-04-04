@@ -65,7 +65,6 @@ class Server:
                 clean_data = data[2:-1].decode('utf-8')
                 clean_data = ast.literal_eval(clean_data)
                 self.current_temps = clean_data
-                send_data(conn, "data received")
                 print(self.print_device_info())
             else:
                 if data == byte_encode("lol"):

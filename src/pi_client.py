@@ -2,7 +2,7 @@ import socket
 import thing
 from bluepy import thingy52
 from config import HOST, PORT, MAC_ADDRESS
-from utils import send_data, byte_encode, SensorTypes
+from utils import byte_encode, SensorTypes
 
 class PiClient:
     def __init__(self):
@@ -48,6 +48,7 @@ class PiClient:
             thingies.append(thingy)
 
         return thingies
+
 if __name__ == '__main__':
     
     client = PiClient()
