@@ -66,20 +66,27 @@ class Server:
 
         if mask & selectors.EVENT_WRITE:
             data = key_data.inb
-            if data == byte_encode("lol"):
-                self.send_data(conn, "lol", key_data)
-            elif data == byte_encode("temperature"):
-                self.send_data(conn, self.get_temp_info(), key_data)
-            elif data == byte_encode("devices"):
-                self.send_data(conn, self.get_devices(), key_data)
-            elif data == byte_encode("help"):
-                self.send_data(conn, "Current commands:\n\ttemperature: show temperature\n\tdevices: show connected devices\n\texit: exit", key_data)
-            elif data == byte_encode("exit"):
-                print("Closed connection")
-                self.sel.unregister(conn)
-                conn.close()
+            if data[0:2] == bytes("ms","utf8"):
+                print(data)
+                data = data[2:]
+                    
+                if data == byte_encode("lol"):
+                    self.send_data(conn, "lol", key_data)
+                elif data == byte_encode("temperature"):
+                    self.send_data(conn, self.get_temp_info(), key_data)
+                elif data == byte_encode("devices"):
+                    self.send_data(conn, self.get_devices(), key_data)
+                elif data == byte_encode("help"):
+                    self.send_data(conn, "Current commands:\n\ttemperature: show temperature\n\tdevices: show connected devices\n\texit: exit", key_data)
+                elif data == byte_encode("exit"):
+                    print("Closed connection")
+                    self.sel.unregister(conn)
+                    conn.close()
+                elif data != b'':
+                    self.send_data(conn, "Not a recognised command", key_data)
+            
             elif data != b'':
-                 self.send_data(conn, "Not a recognised command", key_data)
+                self.send_data(conn, "Not a recognised command", key_data)
     
     def send_data(self, conn, message, data):
         b_message = byte_encode(message)
