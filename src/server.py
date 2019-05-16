@@ -10,13 +10,19 @@ class Server:
     current_devices = []
 
     def __init__(self):
+        sock_type = socket.AF_INET
+        
+        if ':' in HOST:
+            sock_type = socket.AF_INET6
+
         self.sel = selectors.DefaultSelector()
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s = socket.socket(sock_type, socket.SOCK_STREAM)
+
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind((HOST, PORT))
         self.s.listen()
         
-        print("Server running on port "+str(PORT))
+        print("Server running at address "+ str(HOST) +" port "+str(PORT))
         self.s.setblocking(False)
         self.sel.register(self.s, selectors.EVENT_READ, data=None)
 

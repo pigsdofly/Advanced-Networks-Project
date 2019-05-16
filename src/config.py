@@ -1,3 +1,4 @@
 MAC_ADDRESS = ['DF:6F:CF:05:BA:72']
-HOST = ''
+HOST = '::1'
+TARGET = '::1'
 PORT = 12345

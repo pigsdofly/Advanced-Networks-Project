@@ -1,11 +1,17 @@
 import socket
-from config import HOST, PORT
+from config import TARGET, PORT
 from utils import byte_encode
 
 class UserClient:
     def __init__(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect_ex((HOST, PORT))
+        sock_type = socket.AF_INET
+        connect_pair = (TARGET, PORT)
+
+        if ':' in TARGET:
+            sock_type = socket.AF_INET6
+        self.sock = socket.socket(sock_type, socket.SOCK_STREAM)
+
+        self.sock.connect_ex(connect_pair)
 
     def send_data(self, out_string):
         out_string = 'ms' + out_string
