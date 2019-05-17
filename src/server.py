@@ -95,7 +95,7 @@ class Server:
                 self.send_data(conn, "Not a recognised command", key_data)
     
     def send_data(self, conn, message, data):
-        b_message = byte_encode(message)
+        b_message = byte_encode(message)[:-1]
         sent = conn.send(b_message)
         data.inb = b''
 
