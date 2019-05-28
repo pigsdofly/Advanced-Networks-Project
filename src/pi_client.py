@@ -63,13 +63,12 @@ class PiClient:
             #Get sensor data from the delegate
             dev_temp = device.delegate.temps
             dev_humidity = device.delegate.humidity
-            dev_pressure = device.delegate.pressure
+            dev_pressure = '{}.{}'.format(device.delegate.pressure_int, device.delegate.pressure_dec)
 
-            rounded_pressure = '{}.{}'.format(int(dev_pressure[:-2],16), int(dev_temp[-2:], 16))
             rounded_temp = '{}.{}'.format(int(dev_temp[:-2], 16), int(dev_temp[-2:], 16))
             dev_dict['temp'] = rounded_temp
             dev_dict['humidity'] = dev_humidity
-            dev_dict['pressure'] = rounded_pressure
+            dev_dict['pressure'] = dev_pressure
             device_info.append(dev_dict)
 
         dev_string = 'pi'+str(device_info)
