@@ -20,9 +20,11 @@ class NewDelegate(btle.DefaultDelegate):
             print ('Notification: Button recieved: ', press)
         if hnd == thingy52.e_humidity_handle:
             data = int.from_bytes(data, byteorder='little')
-            print('Notification: pressure recieved: ',data)
+            self.humidity = data
+            print('Notification: humidity recieved: ',data)
         if hnd == thingy52.e_pressure_handle:
             data = int.from_bytes(data, byteorder='little')
+            self.pressure = data
             print('Notification: pressure recieved: ', data)
         if hnd == thingy52.e_gas_handle:
             data = int.from_bytes(data, byteorder='little')

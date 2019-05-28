@@ -37,12 +37,14 @@ class PiClient:
 
         self.sock.send(byte_encode('msexit\n'))
         self.sock.close()
-        self.disable_temps()
+        self.disable_sensors()
         
 
-    def disable_temps(self):
+    def disable_sensors(self):
         for device in self.thingies:
            device.environment.set_temperature_notification(False)
+           device.environment.set_pressure_notification(False)
+           device.environment.set_humidity_notification(False)
 
     def get_temps(self):
         device_info = []
@@ -52,12 +54,22 @@ class PiClient:
             print(dev_dict['name'])
 
             thing.selectSensor(SensorTypes.TEMPERATURE, device)
-            rounded_temp = ""
+            thing.selectSensor(SensorTypes.HUMID, device)
+            thing.selectSensor(SensorTypes.PRESSURE, device)
+
+
             device.waitForNotifications(2)
-            #Get temperature information from the delegate
+
+            #Get sensor data from the delegate
             dev_temp = device.delegate.temps
+            dev_humidity = device.delegate.humidity
+            dev_pressure = device.delegate.pressure
+
+            rounded_pressure = '{}.{}'.format(int(dev_pressure[:-2],16), int(dev_temp[-2:], 16))
             rounded_temp = '{}.{}'.format(int(dev_temp[:-2], 16), int(dev_temp[-2:], 16))
             dev_dict['temp'] = rounded_temp
+            dev_dict['humidity'] = dev_humidity
+            dev_dict['pressure'] = rounded_pressure
             device_info.append(dev_dict)
 
         dev_string = 'pi'+str(device_info)

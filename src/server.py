@@ -65,6 +65,8 @@ class Server:
                     clean_data = ast.literal_eval(clean_data)
                     self.current_temps = clean_data
                     print(self.get_temp_info())
+                    print(self.get_humidity_info())
+                    print(self.get_pressure_info())
 
             else:
                 self.sel.unregister(conn)
@@ -108,6 +110,23 @@ class Server:
                 ret_str += device['name'] + '\n'
             return ret_str
 
+    def get_pressure_info(self):
+        if len(self.current_temps) == 0:
+            return "No device info available"
+        else:
+            ret_str = ""
+            for device in self.current_temps:
+                ret_str += "The temperature near "+ device['name'] + " is: "+device['temp'] + '\n'
+            return ret_str
+        
+    def get_humidity_info(self):
+        if len(self.current_temps) == 0:
+            return "No device info available"
+        else:
+            ret_str = ""
+            for device in self.current_temps:
+                ret_str += "The temperature near "+ device['name'] + " is: "+device['humidity'] + '%\n'
+            return ret_str
 
     def get_temp_info(self):
         if len(self.current_temps) == 0:
