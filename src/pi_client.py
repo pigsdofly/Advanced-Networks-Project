@@ -8,23 +8,42 @@ from utils import byte_encode, SensorTypes
 
 class PiClient:
     def __init__(self):
-        sock_type = socket.AF_INET
+        self.thingies = self.fill_thingies()
 
+
+    def make_socket(self):
+        sock_type = socket.AF_INET
         if ':' in TARGET:
             sock_type = socket.AF_INET6
 
-        self.thingies = self.fill_thingies()
         self.sock = socket.socket(sock_type, socket.SOCK_STREAM)
-    
+  
     def connect(self):
         example_temps = self.get_temps()
+        self.make_socket()
         self.sock.connect_ex((TARGET, PORT))
         # Receive the intro message from the server but don't display it
-        data = self.sock.recv(1024)
-        self.sock.sendall(byte_encode(example_temps))
-        self.sock.sendall(byte_encode('exit'))
-        self.sock.close()
+        try:
+            data = self.sock.recv(1024)
         
+        except:
+            pass
+
+        self.sock.send(byte_encode(example_temps))
+        try:
+            data = self.sock.recv(1024)
+        except:
+            pass
+
+        self.sock.send(byte_encode('msexit\n'))
+        self.sock.close()
+        self.disable_temps()
+        
+
+    def disable_temps(self):
+        for device in self.thingies:
+           device.environment.set_temperature_notification(False)
+
     def get_temps(self):
         device_info = []
         for device in self.thingies:
@@ -61,4 +80,4 @@ if __name__ == '__main__':
    
     while True:
         client.connect()
-        time.sleep(120)
+        time.sleep(5)
