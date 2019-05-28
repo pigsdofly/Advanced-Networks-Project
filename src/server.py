@@ -82,10 +82,14 @@ class Server:
                     self.send_data(conn, "lol", key_data)
                 elif data == byte_encode("temperature"):
                     self.send_data(conn, self.get_temp_info(), key_data)
+                elif data == byte_encode("pressure"):
+                    self.send_data(conn, self.get_pressure_info(), key_data)
+                elif data == byte_encode("humidity"):
+                    self.send_data(conn, self.get_humidity_info(), key_data)
                 elif data == byte_encode("devices"):
                     self.send_data(conn, self.get_devices(), key_data)
                 elif data == byte_encode("help"):
-                    self.send_data(conn, "Current commands:\n\ttemperature: show temperature\n\tdevices: show connected devices\n\texit: exit", key_data)
+                    self.send_data(conn, "Current commands:\n\ttemperature: show temperature\n\thumidity: show humidity\n\tpressure: show pressure\n\tdevices: show connected devices\n\texit: exit", key_data)
                 elif data == byte_encode("exit"):
                     print("Closed connection")
                     self.sel.unregister(conn)
@@ -116,7 +120,7 @@ class Server:
         else:
             ret_str = ""
             for device in self.current_temps:
-                ret_str += "The temperature near "+ device['name'] + " is: "+device['temp'] + '\n'
+                ret_str += "The pressure near "+ device['name'] + " is: "+str(device['pressure']) + '\n'
             return ret_str
         
     def get_humidity_info(self):
@@ -125,7 +129,7 @@ class Server:
         else:
             ret_str = ""
             for device in self.current_temps:
-                ret_str += "The temperature near "+ device['name'] + " is: "+device['humidity'] + '%\n'
+                ret_str += "The humidity near "+ device['name'] + " is: "+str(device['humidity']) + '%\n'
             return ret_str
 
     def get_temp_info(self):
